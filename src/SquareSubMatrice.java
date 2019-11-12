@@ -17,10 +17,19 @@ public class SquareSubMatrice {
         this.lastColone=dimension-1;
     }
 
+    public SquareSubMatrice(int[][] matrix, int firstLine, int lastLine, int firstColone, int lastColone){
+        this.matrix=matrix;
+        this.dimension=matrix.length;
+        this.firstLine=firstLine;
+        this.firstColone=firstColone;
+        this.lastLine=lastLine;
+        this.lastColone=lastColone;
+    }
+
     public SquareSubMatrice clone(){
         SquareSubMatrice copy=new SquareSubMatrice(dimension);
-        for(int i=0; i<dimension; i++){
-            for(int j=0; j<dimension; j++){
+        for(int i=firstLine; i<=lastLine; i++){
+            for(int j=firstColone; j<=lastColone; j++){
                 copy.matrix[i][j]=this.matrix[i][j];
             }
         }
@@ -54,9 +63,9 @@ public class SquareSubMatrice {
     public SquareSubMatrice product(SquareSubMatrice matrix){
         int sum=0;
         SquareSubMatrice product=new SquareSubMatrice(getSubMatriceDimension());
-        for(int i=0; i<getSubMatriceDimension(); i++){
-            for(int j=0; j<getSubMatriceDimension(); j++){
-                for(int k=0; k<getSubMatriceDimension(); k++){
+        for(int i=firstLine; i<=lastLine; i++){
+            for(int j=firstColone; j<=lastColone; j++){
+                for(int k=firstColone; k<=lastColone; k++){
                     sum+=this.get(i,k)*matrix.get(k,j);
                 }
                 product.set(i,j,sum);
@@ -71,22 +80,26 @@ public class SquareSubMatrice {
         return this;
     }
 
+    public SquareSubMatrice productRecursif(SquareSubMatrice matrix, SquareSubMatrice res, int i, int j, int k, int sum){
+        if(i>this.lastLine && j>this.lastColone){
+            return res;
+        }
+        else{
+            if(j<lastColone &&  k<lastColone){
+                return productRecursif(matrix,res,i,j,k+1,sum+this.get(i,k)*matrix.get(k,j));
+            }else {
+                res.set(i,j,sum);
+                return productRecursif(matrix,res,i,j+1,0,0);
+            }
+        }
+    }
+
     public SquareSubMatrice power(int n){
         if(n==1){
             return this;
         }else{
             SquareSubMatrice x=this.clone();
             return x.product(this.power(n-1));
-        }
-    }
-
-    public void show(){
-        for(int i=0; i<getSubMatriceDimension(); i++){
-            System.out.print("[ ");
-            for(int j=0; j<getSubMatriceDimension(); j++){
-                System.out.print(this.get(i,j)+" ");
-            }
-            System.out.println("]");
         }
     }
 
@@ -100,6 +113,17 @@ public class SquareSubMatrice {
                 SquareSubMatrice x=this.clone();
                 return x.product(this.product(this).quickpower((n-1)/2));
             }
+        }
+    }
+
+
+    public void show(){
+        for(int i=firstLine; i<=lastLine; i++){
+            System.out.print("[ ");
+            for(int j=firstColone; j<=lastColone; j++){
+                System.out.print(this.get(i,j)+" ");
+            }
+            System.out.println("]");
         }
     }
 }
