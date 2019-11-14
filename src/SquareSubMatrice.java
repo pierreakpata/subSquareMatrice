@@ -1,3 +1,4 @@
+import java.util.Random;
 
 public class SquareSubMatrice {
 
@@ -7,6 +8,7 @@ public class SquareSubMatrice {
     private int lastLine;
     private int firstColone;
     private int lastColone;
+    private int countProductAndSum;
 
     //constructeur par defaut
     public SquareSubMatrice(){
@@ -20,15 +22,44 @@ public class SquareSubMatrice {
         this.firstColone=0;
         this.lastLine=dimension-1;
         this.lastColone=dimension-1;
+        this.countProductAndSum=0;
     }
 
-    public SquareSubMatrice(int[][] matrix, int firstLine, int lastLine, int firstColone, int lastColone){
-        this.matrix=matrix;
-        this.dimension=matrix.length;
+    public SquareSubMatrice(int dimension, int firstLine, int lastLine, int firstColone, int lastColone){
+        this.matrix=new int[dimension][dimension];
+        this.dimension=dimension;
         this.firstLine=firstLine;
-        this.firstColone=firstColone;
         this.lastLine=lastLine;
+        this.firstColone=firstColone;
         this.lastColone=lastColone;
+        this.countProductAndSum=0;
+    }
+
+    //recupérer la sous matrice d'une matrice
+    public SquareSubMatrice getSquareSubMatrice(int firstLine, int firstColone, int lastLine,int lastColone){
+        SquareSubMatrice subMatrice=new SquareSubMatrice();
+        subMatrice.matrix=this.matrix;
+        subMatrice.dimension=this.dimension;
+        subMatrice.firstLine=firstLine;
+        subMatrice.lastLine=lastLine;
+        subMatrice.firstColone=firstColone;
+        subMatrice.lastColone=lastColone;
+        this.countProductAndSum=0;
+
+        return subMatrice;
+    }
+
+    public void randomMatrix(){
+        Random random=new Random();
+        for(int i=firstLine; i<=lastLine; i++){
+            for(int j=firstColone; j<=lastColone; j++){
+                this.matrix[i][j]=random.nextInt(10);
+            }
+        }
+    }
+
+    public int getCountProductAndSum(){
+        return this.countProductAndSum;
     }
 
     @Override
@@ -64,6 +95,7 @@ public class SquareSubMatrice {
         this.matrix[row+firstLine][col+firstColone]=value;
     }
 
+    //méthode sum
     public void sum(SquareSubMatrice matrix){
         for(int i=0; i<getSubMatriceDimension(); i++){
             for(int j=0; j<getSubMatriceDimension(); j++){
@@ -72,6 +104,7 @@ public class SquareSubMatrice {
         }
     }
 
+    //product
     public void product(SquareSubMatrice matrix){
         int sum=0;
         SquareSubMatrice product=new SquareSubMatrice(getSubMatriceDimension());
@@ -79,6 +112,7 @@ public class SquareSubMatrice {
             for(int j=0; j<getSubMatriceDimension(); j++){
                 for(int k=0; k<getSubMatriceDimension(); k++){
                     sum+=this.get(i,k)*matrix.get(k,j);
+                    this.countProductAndSum+=2;
                 }
                 product.set(i,j,sum);
                 sum=0;
@@ -91,7 +125,7 @@ public class SquareSubMatrice {
         }
     }
 
-
+    //puissance naîve
     public void power(int n){
         if(n!=1){
             SquareSubMatrice x=this.clone();
@@ -100,6 +134,7 @@ public class SquareSubMatrice {
         }
     }
 
+    //exponentiation rapide
     public void quickpower(int n){
         if(n!=1){
             SquareSubMatrice x=this.clone();
@@ -114,7 +149,7 @@ public class SquareSubMatrice {
         }
     }
 
-
+    //affiche d'un sous matrice
     public void show(){
         for(int i=0; i<getSubMatriceDimension(); i++){
             System.out.print("[ ");
